@@ -1,0 +1,17 @@
+GET http://localhost:8080/api/printers
+
+regresa json con impresoras instaladas
+
+
+POST http://localhost:8080/api/printers
+
+pasar por body json
+{
+    "name":"Microsoft Print to PDF",
+    "texts":["imprimir ", "por lineas ","de codigo","lineas de codigo"]
+}
+
+name: impresora en cual imprimir
+texts:arreglo de string "reglones a imprimir"
+
+si no se pasa el name deberia imprimir en la impresora por defoult
