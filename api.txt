@@ -7,10 +7,32 @@ POST http://localhost:8080/api/printers
 
 pasar por body json
 {
-    "name":"Microsoft Print to PDF",
-    "texts":["imprimir ", "por lineas ","de codigo","lineas de codigo"]
-}
+    "PrinterName":"",
+    "HeaderLines":["Abastecedora de Productos Cárnicos del Norte"
+                    ,"colonia san salvador, calle las flores 225 "
+                    ,"XAXX010101000"],
+    "SubheaderLine":"venta 1021",
+    "Items":[{
+        "descripcion":"chorizo",
+        "cantidad":10,
+        "importe":10.00
+        },
+        {
+        "descripcion":"carne",
+        "cantidad":10,
+        "importe":10.00
+        },
 
+         {
+        "descripcion":"mas carne",
+        "cantidad":10,
+        "importe":10.00
+        }
+        
+        ],
+    "total":30.00
+
+}
 name: impresora en cual imprimir
 texts:arreglo de string "reglones a imprimir"
 

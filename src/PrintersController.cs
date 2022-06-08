@@ -16,19 +16,47 @@ namespace AspNetSelfHostDemo
             return Ok(r);
         }
 
-        // POST api/Printers 
-        public IHttpActionResult Post([FromBody] Printer value)
+        
+        public IHttpActionResult Post([FromBody] Ticket value)
         {
-            PrinterService service = new PrinterService();
-           bool r=  service.Print(value);
-            if (!r)
+
+
+            TicketService ticketService = new TicketService();
+            if (!string.IsNullOrEmpty(value.HeaderImage))
             {
-                return InternalServerError();
+                //ticketService.HeaderImage =  value.HeaderImage;
             }
-            return Ok(r);
+            //
+            foreach (var headerLine in value.HeaderLines)
+            {
+                ticketService.AddHeaderLine(headerLine);
+            }
+
+            ticketService.AddSubHeaderLine(value.SubheaderLine);
+            foreach (var item in value.Items)
+            {
+                ticketService.AddItem(item.Cantidad.ToString(), item.Descripcion, item.Importe.ToString());
+            }
+            ticketService.AddTotal("TOTAL", value.Total.ToString());
+            ticketService.AddFooterLine("Gracias por su preferencia...");
+
+            if (!string.IsNullOrEmpty(value.PrinterName))
+            {
+                ticketService.PrintTicket(value.PrinterName);
+
+            }
+            else
+            {
+                ticketService.PrintTicket();
+            }
+
+
+            return Ok();
         }
 
 
 
-    } 
+
+
+    }
 }
