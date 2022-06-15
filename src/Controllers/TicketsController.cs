@@ -1,20 +1,17 @@
 ﻿using AspNetSelfHostDemo.Models;
 using AspNetSelfHostDemo.Servicios;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Web.Http;
 
 namespace AspNetSelfHostDemo
 {
-    public class PrintersController : ApiController
+    public class TicketsController : ApiController
     {
-        // GET api/Printers 
-        public IHttpActionResult Get()
-        {
-            PrinterService service = new PrinterService();
-            List<Printer> r= service.GetPrinters();
-            return Ok(r);
-        }
+       
 
         
         public IHttpActionResult Post([FromBody] Ticket value)
@@ -24,7 +21,7 @@ namespace AspNetSelfHostDemo
             TicketService ticketService = new TicketService();
             if (!string.IsNullOrEmpty(value.HeaderImage))
             {
-                //ticketService.HeaderImage =  value.HeaderImage;
+                ticketService.HeaderImage = ticketService.LoadBase64(value.HeaderImage);
             }
             //
             foreach (var headerLine in value.HeaderLines)
@@ -40,6 +37,11 @@ namespace AspNetSelfHostDemo
             ticketService.AddTotal("TOTAL", value.Total.ToString());
             ticketService.AddFooterLine("Gracias por su preferencia...");
 
+            Zen.Barcode.Code128BarcodeDraw codigo = Zen.Barcode.BarcodeDrawFactory.Code128WithChecksum;
+            value.VentaCode = value.VentaCode.PadLeft(10, '0');
+            Image imagen= codigo.Draw(value.VentaCode, 70,2);
+            ticketService.BarcCodeImage = imagen;
+
             if (!string.IsNullOrEmpty(value.PrinterName))
             {
                 ticketService.PrintTicket(value.PrinterName);
@@ -49,12 +51,11 @@ namespace AspNetSelfHostDemo
             {
                 ticketService.PrintTicket();
             }
+            
 
 
             return Ok();
         }
-
-
 
 
 

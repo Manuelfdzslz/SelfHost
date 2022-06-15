@@ -11,15 +11,15 @@ namespace AspNetSelfHostDemo.Servicios
 {
     public class PrinterService
     {
-        private  Printer p = new Printer();
+        private InstalledPrinter p = new InstalledPrinter();
 
-        public List<Printer> GetPrinters()
+        public List<InstalledPrinter> GetPrinters()
         {
             var r =System.Drawing.Printing.PrinterSettings.InstalledPrinters;
-            List<Printer> list = new List<Printer>();
+            List<InstalledPrinter> list = new List<InstalledPrinter>();
             foreach (var item in r)
             {
-                Printer p = new Printer();
+                InstalledPrinter p = new InstalledPrinter();
                 p.Name = item.ToString();
                 list.Add(p);
             }
@@ -27,7 +27,7 @@ namespace AspNetSelfHostDemo.Servicios
         }
 
 
-        public bool Print(Printer printer)
+        public bool Print(InstalledPrinter printer)
         {
             bool response = true;
             try

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AspNetSelfHostDemo.Models
 {
-    public class Printer
+    public class InstalledPrinter
     {
         public string Name { get; set; }
         public List<string> Texts { get; set; }
