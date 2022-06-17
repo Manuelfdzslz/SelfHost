@@ -19,37 +19,39 @@ namespace AspNetSelfHostDemo
 
 
             TicketService ticketService = new TicketService();
+            
             if (!string.IsNullOrEmpty(value.HeaderImage))
             {
                 ticketService.HeaderImage = ticketService.LoadBase64(value.HeaderImage);
             }
-            //
+            
             foreach (var headerLine in value.HeaderLines)
             {
                 ticketService.AddHeaderLine(headerLine);
             }
+            /*
 
             ticketService.AddSubHeaderLine(value.SubheaderLine);
             foreach (var item in value.Items)
             {
                 ticketService.AddItem(item.Cantidad.ToString(), item.Descripcion, item.Importe.ToString());
-            }
-            ticketService.AddTotal("TOTAL", value.Total.ToString());
-            ticketService.AddFooterLine("Gracias por su preferencia...");
+            }*/
+            //ticketService.AddTotal("TOTAL", value.Total.ToString());
+            //ticketService.AddFooterLine("Gracias por su preferencia...");
 
             Zen.Barcode.Code128BarcodeDraw codigo = Zen.Barcode.BarcodeDrawFactory.Code128WithChecksum;
             value.VentaCode = value.VentaCode.PadLeft(10, '0');
-            Image imagen= codigo.Draw(value.VentaCode, 70,2);
+            Image imagen= codigo.Draw(value.VentaCode, 65,2);
             ticketService.BarcCodeImage = imagen;
 
             if (!string.IsNullOrEmpty(value.PrinterName))
             {
-                ticketService.PrintTicket(value.PrinterName);
+                ticketService.PrintLabel(value.PrinterName);
 
             }
             else
             {
-                ticketService.PrintTicket();
+                ticketService.PrintLabel();
             }
             
 

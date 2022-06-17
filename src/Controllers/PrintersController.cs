@@ -65,7 +65,7 @@ namespace AspNetSelfHostDemo
             printer.Font("Font Special A", Fonts.SpecialFontA);
             printer.Font("Font Special B", Fonts.SpecialFontB);
             printer.Separator();
-            //printer.InitializePrint();
+            printer.InitializePrint();
             printer.SetLineHeight(24);
             printer.Append("This is first line with line height of 30 dots");
             printer.SetLineHeight(40);

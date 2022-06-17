@@ -159,6 +159,18 @@ namespace AspNetSelfHostDemo.Servicios
             pr.Print();
         }
 
+        public void PrintLabel(string impresora = "")
+        {
+            printFont = new Font(fontName, fontSize, FontStyle.Regular);
+            PrintDocument pr = new PrintDocument();
+            if (!impresora.Equals(""))
+            {
+                pr.PrinterSettings.PrinterName = impresora;
+            }
+            pr.PrintPage += new PrintPageEventHandler(pr_PrintLabel);
+            pr.Print();
+        }
+
         private void pr_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             e.Graphics.PageUnit = GraphicsUnit.Millimeter;
@@ -170,6 +182,31 @@ namespace AspNetSelfHostDemo.Servicios
             DrawTotales();
             DrawBarCode();
             DrawFooter();
+
+            if (headerImage != null)
+            {
+                HeaderImage.Dispose();
+                headerImage.Dispose();
+            }
+
+            if (barCodeImage != null)
+            {
+                barCodeImage.Dispose();
+                barCodeImage.Dispose();
+            }
+        }
+
+        private void pr_PrintLabel(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            e.Graphics.PageUnit = GraphicsUnit.Millimeter;
+            gfx = e.Graphics;
+            //DrawImage();
+            DrawHeader();
+           // DrawSubHeader();
+           // DrawItems();
+           // DrawTotales();
+            DrawBarCode();
+            //DrawFooter();
 
             if (headerImage != null)
             {
@@ -372,7 +409,7 @@ namespace AspNetSelfHostDemo.Servicios
                 try
                 {
                     //gfx.DrawImage(headerImage, new Point((int)leftMargin, (int)YPosition()));
-                    gfx.DrawImage(barCodeImage, new Point((int)10, (int)YPosition()));
+                    gfx.DrawImage(barCodeImage, new Point((int)5, (int)YPosition()));
                     double height = ((double)barCodeImage.Height ) ;
                     barcodeHeight = (int)Math.Round(height) + 3;
                 }

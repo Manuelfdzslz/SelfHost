@@ -1,3 +1,15 @@
+http://localhost:8080/api/Tickets
+
+{
+    "HeaderLines":["venta 1021"],
+    "VentaCode":"1021"
+
+}
+
+
+
+
+
 GET http://localhost:8080/api/printers
 
 regresa json con impresoras instaladas
