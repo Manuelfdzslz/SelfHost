@@ -4,6 +4,9 @@ using ESC_POS_USB_NET.Enums;
 using ESC_POS_USB_NET.Printer;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,10 +26,17 @@ namespace AspNetSelfHostDemo
 
         public IHttpActionResult Post([FromBody] Ticket value)
         {
-
-
+            Bitmap imagebitMap;
             Printer printer = new Printer(value.PrinterName);
-            printer.Append("NORMAL - 48 COLUMNS");
+            if (!string.IsNullOrEmpty(value.HeaderImage))
+            {
+                var img = LoadBase64(value.HeaderImage);
+                imagebitMap = new System.Drawing.Bitmap(img);
+                printer.Image(imagebitMap);
+            }
+            printer.Separator();
+
+            /*printer.Append("NORMAL - 48 COLUMNS");
             printer.Append("1...5...10...15...20...25...30...35...40...45.48");
             printer.Separator();
             printer.Append("Text Normal");
@@ -73,14 +83,25 @@ namespace AspNetSelfHostDemo
             printer.Append("This is third line with line height of 40 dots");
             printer.NewLines(3);
             printer.Append("End of Test :)");
-            printer.Separator();
+            printer.Separator();*/
             printer.Append("Code 128");
-            printer.Code128("123456789");
+             printer.Code128("123456789");
             printer.Separator();
             printer.FullPaperCut();
             printer.PrintDocument();
 
             return Ok();
+        }
+
+        public Image LoadBase64(string base64)
+        {
+            byte[] bytes = Convert.FromBase64String(base64);
+            Image image;
+            using (MemoryStream ms = new MemoryStream(bytes))
+            {
+                image = Image.FromStream(ms);
+            }
+            return image;
         }
     }
 }
