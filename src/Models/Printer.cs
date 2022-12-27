@@ -9,6 +9,12 @@ namespace AspNetSelfHostDemo.Models
     public class InstalledPrinter
     {
         public string Name { get; set; }
+        public bool Disponible { get; set; }
         public List<string> Texts { get; set; }
+
+        public InstalledPrinter()
+        {
+            Disponible = false;
+        }
     }
 }

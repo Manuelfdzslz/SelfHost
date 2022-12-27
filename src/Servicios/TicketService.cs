@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,10 +22,11 @@ namespace AspNetSelfHostDemo.Servicios
 
         private Image headerImage = null;
         private Image barCodeImage = null;
+        public string urlLogo = "";
 
         int count = 0;
 
-        int maxChar = 30;
+        int maxChar = 36;
         int maxCharDescription = 20;
 
         int imageHeight = 0;
@@ -34,7 +36,7 @@ namespace AspNetSelfHostDemo.Servicios
         float topMargin = 3;
 
         string fontName = "Lucida Console";
-        int fontSize = 10;
+        int fontSize = 9;
 
         Font printFont = null;
         SolidBrush myBrush = new SolidBrush(Color.Black);
@@ -89,6 +91,11 @@ namespace AspNetSelfHostDemo.Servicios
         public void AddSubHeaderLine(string line)
         {
             subHeaderLines.Add(line);
+        }
+
+        public void AddLogo(string logo)
+        {
+            urlLogo = logo;
         }
 
         public void AddItem(string cantidad, string item, string price)
@@ -175,7 +182,7 @@ namespace AspNetSelfHostDemo.Servicios
         {
             e.Graphics.PageUnit = GraphicsUnit.Millimeter;
             gfx = e.Graphics;
-            DrawImage();
+            DrawUrlImage();
             DrawHeader();
             DrawSubHeader();
             DrawItems();
@@ -243,6 +250,30 @@ namespace AspNetSelfHostDemo.Servicios
                 {
                 }
             }
+        }
+
+        private void DrawUrlImage()
+        {
+            
+                try
+                {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                    System.Net.WebRequest request = System.Net.WebRequest.Create(urlLogo);//"https://www.camiongo.com/images/register/transportista.jpg"
+                    System.Net.WebResponse response = request.GetResponse();
+                    System.IO.Stream responseStream = response.GetResponseStream();
+                    Bitmap bitmap2 = new Bitmap(responseStream);
+                    headerImage = bitmap2;
+
+                    //gfx.DrawImage(headerImage, new Point((int)leftMargin, (int)YPosition()));
+                    gfx.DrawImage(bitmap2, new Point((int)25, (int)YPosition()));
+                    double height = ((double)bitmap2.Height / 58) * 15;
+                    imageHeight = (int)Math.Round(height) + 3;
+                }
+                catch (Exception)
+                {
+                }
         }
 
         private void DrawHeader()

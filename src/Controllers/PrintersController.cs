@@ -1,21 +1,19 @@
 ﻿using AspNetSelfHostDemo.Models;
 using AspNetSelfHostDemo.Servicios;
-using ESC_POS_USB_NET.Enums;
-using ESC_POS_USB_NET.Printer;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AspNetSelfHostDemo
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class PrintersController : ApiController
     {
+
         // GET api/Printers 
         public IHttpActionResult Get()
         {
@@ -26,82 +24,70 @@ namespace AspNetSelfHostDemo
 
         public IHttpActionResult Post([FromBody] Ticket value)
         {
-            Bitmap imagebitMap;
-            Printer printer = new Printer(value.PrinterName);
-            if (!string.IsNullOrEmpty(value.HeaderImage))
+
+            for (int i = 0; i < value.NoImpresiones; i++)
             {
-                var img = LoadBase64(value.HeaderImage);
-                imagebitMap = new System.Drawing.Bitmap(img);
-                printer.Image(imagebitMap);
+                TicketService ticketService = new TicketService();
+                
+                if (value.ShowOriginal && i == 0)
+                {
+                    ticketService.AddHeaderLine("******** ORIGINAL ********");
+                }
+                if (value.NoImpresiones > 1 && value.ShowOriginal && i > 0)
+                {
+                    ticketService.AddHeaderLine("******** DUPLICADO ********");
+                }
+
+
+                if (!string.IsNullOrEmpty(value.HeaderImage))
+                {
+                    ticketService.HeaderImage = ticketService.LoadBase64(value.HeaderImage);
+                }
+
+                if (!string.IsNullOrEmpty(value.LogoUrl))
+                {
+                    ticketService.AddLogo(value.LogoUrl);
+                }
+
+                ticketService.AddSubHeaderLine(value.Name);
+                ticketService.AddSubHeaderLine(value.TaxId);
+                ticketService.AddSubHeaderLine(value.Address);
+                ticketService.AddSubHeaderLine(value.SaleDate.ToString());
+                ticketService.AddSubHeaderLine("venta: " + value.SaleId);
+                foreach (var item in value.Items)
+                {
+                    ticketService.AddItem(item.Cantidad.ToString(), item.Descripcion, item.Importe.ToString());
+                }
+
+                ticketService.AddTotal("Subtotal", value.Subtotal.ToString());
+                ticketService.AddTotal("Impuestos", value.Tax.ToString());
+                ticketService.AddTotal("TOTAL", value.Total.ToString());
+                /*
+                Zen.Barcode.Code128BarcodeDraw codigo = Zen.Barcode.BarcodeDrawFactory.Code128WithChecksum;
+                value.TaxId = value.TaxId.PadLeft(10, '0');
+                Image imagen = codigo.Draw(value.TaxId, 55, 1);
+                ticketService.BarcCodeImage = imagen;
+                */
+
+                ticketService.AddFooterLine("Gracias por su preferencia...");
+                ticketService.AddFooterLine(value.Pagare);
+                ticketService.PrintTicket(value.PrinterName);
             }
-            printer.Separator();
-
-            /*printer.Append("NORMAL - 48 COLUMNS");
-            printer.Append("1...5...10...15...20...25...30...35...40...45.48");
-            printer.Separator();
-            printer.Append("Text Normal");
-            printer.BoldMode("Bold Text");
-            printer.UnderlineMode("Underlined text");
-            printer.Separator();
-            printer.ExpandedMode(PrinterModeState.On);
-            printer.Append("Expanded - 23 COLUMNS");
-            printer.Append("1...5...10...15...20..23");
-            printer.ExpandedMode(PrinterModeState.Off);
-            printer.Separator();
-            printer.CondensedMode(PrinterModeState.On);
-            printer.Append("Condensed - 64 COLUMNS");
-            printer.Append("1...5...10...15...20...25...30...35...40...45...50...55...60..64");
-            printer.CondensedMode(PrinterModeState.Off);
-            printer.Separator();
-            printer.DoubleWidth2();
-            printer.Append("Font Width 2");
-            printer.DoubleWidth3();
-            printer.Append("Font Width 3");
-            printer.NormalWidth();
-            printer.Append("Normal width");
-            printer.Separator();
-            printer.AlignRight();
-            printer.Append("Right aligned text");
-            printer.AlignCenter();
-            printer.Append("Center-aligned text");
-            printer.AlignLeft();
-            printer.Append("Left aligned text");
-            printer.Separator();
-            printer.Font("Font A", Fonts.FontA);
-            printer.Font("Font B", Fonts.FontB);
-            printer.Font("Font C", Fonts.FontC);
-            printer.Font("Font D", Fonts.FontD);
-            printer.Font("Font E", Fonts.FontE);
-            printer.Font("Font Special A", Fonts.SpecialFontA);
-            printer.Font("Font Special B", Fonts.SpecialFontB);
-            printer.Separator();
-            printer.InitializePrint();
-            printer.SetLineHeight(24);
-            printer.Append("This is first line with line height of 30 dots");
-            printer.SetLineHeight(40);
-            printer.Append("This is second line with line height of 24 dots");
-            printer.Append("This is third line with line height of 40 dots");
-            printer.NewLines(3);
-            printer.Append("End of Test :)");
-            printer.Separator();*/
-            printer.Append("Code 128");
-             printer.Code128("123456789");
-            printer.Separator();
-            printer.FullPaperCut();
-            printer.PrintDocument();
-
+            
             return Ok();
+
+           
         }
 
-        public Image LoadBase64(string base64)
+        [Route("/api/printers/Valid")]
+        [HttpGet]
+        public IHttpActionResult validaImpresora(string name)
         {
-            byte[] bytes = Convert.FromBase64String(base64);
-            Image image;
-            using (MemoryStream ms = new MemoryStream(bytes))
-            {
-                image = Image.FromStream(ms);
-            }
-            return image;
+            PrinterService service = new PrinterService();
+            return  Ok(service.EstaEnLineaLaImpresora(name) );
         }
+
+
+
     }
 }

@@ -28,15 +28,18 @@ namespace AspNetSelfHostDemo
 
             // Configure Web API for self-host. 
             var config = new HttpConfiguration();
+            config.EnableCors();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
+                
             );
+            
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             // Web Api
             app.UseWebApi(config);
-
+             
             // File Server
             var options = new FileServerOptions
             {

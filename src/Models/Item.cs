@@ -11,5 +11,6 @@ namespace AspNetSelfHostDemo.Models
         public int Cantidad { get; set; }
         public string Descripcion { get; set; }
         public Decimal Importe { get; set; }
+        public Decimal Unitario { get; set; }
     }
 }

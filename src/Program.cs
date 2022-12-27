@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.ServiceProcess;
 using Microsoft.Owin.Hosting;
 using Topshelf;
@@ -7,8 +8,13 @@ namespace AspNetSelfHostDemo
 {
     class Program
     {
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private extern static int ShowWindow(System.IntPtr hWnd, int nCmdShow);
+
         static void Main(string[] args)
         {
+
+            ShowWindow(Process.GetCurrentProcess().MainWindowHandle, 0);
             StartTopshelf();
         }
 

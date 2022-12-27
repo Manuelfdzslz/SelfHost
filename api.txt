@@ -1,15 +1,38 @@
-http://localhost:8080/api/Tickets
-
+http://localhost:8080/api/PrintersEsc
+http://localhost:8080/api/Printers
 {
-    "HeaderLines":["venta 1021"],
-    "VentaCode":"1021"
+   "PrinterName":"",
+   "LogoUrl":"https://lh3.googleusercontent.com/p/AF1QipPgw3eYbHNOsg_YlvAjhhI2rkAbywmH3WwGsbDa=s1600-w400",
+   "Name":"Abastecedora de Productos Cárnicos del Norte",
+   "TaxId":"xxxxxxxx",
+   "Address":"Francisco javier mina 12 Sombrerete zacatecas",
+    "SaleId":"1",
+    "SaleDate":"2022-06-22T17:55:10",
+    "Items":[{
+        "descripcion":"leche sin lactosa",
+        "cantidad":1,
+        "importe":30.00
+        },
+        {
+        "descripcion":"verdura",
+        "cantidad":1,
+        "importe":16.00
+        },
+
+         {
+        "descripcion":"huevo",
+        "cantidad":1,
+        "importe":38.00
+        }
+        
+        ],
+    "total":84.00,
+    "Subtotal":84.00,
+    "Tax":11.59,
+    "PaymentValue":100.00,
+    "Change":0
 
 }
-
-
-
-
-
 GET http://localhost:8080/api/printers
 
 regresa json con impresoras instaladas
