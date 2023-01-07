@@ -124,7 +124,7 @@ namespace AspNetSelfHostDemo.Servicios
                         if (str.Equals(printerName.ToLower()))
                         {
                             //Una vez encontrada verificamos el estado de ésta
-                            if (printer["WorkOffline"].ToString().ToLower().Equals("true") || printer["PrinterStatus"].Equals(7))
+                            if (printer["WorkOffline"].ToString().ToLower().Equals("true") || printer["PrinterStatus"].Equals(7) || printer["Status"].ToString().ToLower().Equals("error"))
                                 //Fuera de línea
                                 online = false;
                             else

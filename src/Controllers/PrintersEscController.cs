@@ -79,9 +79,10 @@ namespace AspNetSelfHostDemo
                     }
 
                     printer.AlignRight();
-                    printer.Append(_ajustaTextTotales("Subtotal",value.Subtotal.ToString()));
-                    printer.Append(_ajustaTextTotales("Impuesto", value.Tax.ToString()));
-                    printer.Append(_ajustaTextTotales("Total", value.Total.ToString()));
+                    ;
+                    printer.Append(_ajustaTextTotales("Subtotal", String.Format("{0:0.00}", value.Subtotal)));
+                    printer.Append(_ajustaTextTotales("Impuesto", String.Format("{0:0.00}", value.Tax)));
+                    printer.Append(_ajustaTextTotales("Total", String.Format("{0:0.00}", value.Total)));
                     if (value.ShowBarCode)
                     {
                         printer.Code128(value.SaleId.PadLeft(10, '0'));
