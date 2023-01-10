@@ -27,7 +27,7 @@ namespace AspNetSelfHostDemo.Servicios
         int count = 0;
 
         int maxChar = 36;
-        int maxCharDescription = 20;
+        int maxCharDescription = 15;
 
         int imageHeight = 0;
         int barcodeHeight = 0;
@@ -115,6 +115,11 @@ namespace AspNetSelfHostDemo.Servicios
             footerLines.Add(line);
         }
 
+        public void AddSeparator()
+        {
+            DrowSeparator();
+        }
+
         public Image LoadBase64(string base64)
         {
             byte[] bytes = Convert.FromBase64String(base64);
@@ -140,7 +145,7 @@ namespace AspNetSelfHostDemo.Servicios
         {
             string dotted = "";
             for (int x = 0; x < maxChar; x++)
-                dotted += "=";
+                dotted += "-";
             return dotted;
         }
 
@@ -302,7 +307,7 @@ namespace AspNetSelfHostDemo.Servicios
                 {
                     line = header;
                     //gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
-                    float XPosition = maxChar - line.Length / 2;
+                    float XPosition = ((maxChar - line.Length) / 2) + 9;
                     gfx.DrawString(line, printFont, myBrush, XPosition, YPosition(), new StringFormat());
 
                     count++;
@@ -341,24 +346,41 @@ namespace AspNetSelfHostDemo.Servicios
 
                     count++;
 
-                    line = DottedLine();
+                   // line = DottedLine();
 
-                    gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
+                   // gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
 
-                    count++;
+                   // count++;
                 }
             }
             DrawEspacio();
         }
 
+        private void DrowSeparator()
+        {
+            line = DottedLine();
+
+            gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
+
+            count++;
+
+        }
         private void DrawItems()
         {
             OrderItem ordIt = new OrderItem('?');
+            line = DottedLine();
 
+             gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
+
+             count++;
             gfx.DrawString("CANT  DESCRIPCION      IMPORTE", printFont, myBrush, leftMargin, YPosition(), new StringFormat());
 
             count++;
-            DrawEspacio();
+            line = DottedLine();
+
+            gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
+
+            count++;
 
             foreach (string item in items)
             {
@@ -403,11 +425,11 @@ namespace AspNetSelfHostDemo.Servicios
 
             leftMargin = 0;
             DrawEspacio();
-            line = DottedLine();
+            //line = DottedLine();
 
-            gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
+            //gfx.DrawString(line, printFont, myBrush, leftMargin, YPosition(), new StringFormat());
 
-            count++;
+            //count++;
             DrawEspacio();
         }
 

@@ -25,7 +25,7 @@ namespace AspNetSelfHostDemo
         public IHttpActionResult Post([FromBody] Ticket value)
         {
 
-            for (int i = 0; i < value.NoImpresiones; i++)
+            for (int i = 0; i < 1/*value.NoImpresiones*/; i++)
             {
                 TicketService ticketService = new TicketService();
                 
@@ -49,11 +49,12 @@ namespace AspNetSelfHostDemo
                     ticketService.AddLogo(value.LogoUrl);
                 }
 
-                ticketService.AddSubHeaderLine(value.Name);
-                ticketService.AddSubHeaderLine(value.TaxId);
-                ticketService.AddSubHeaderLine(value.Address);
-                ticketService.AddSubHeaderLine(value.SaleDate.ToString());
-                ticketService.AddSubHeaderLine("venta: " + value.SaleId);
+                ticketService.AddHeaderLine(value.Name);
+                ticketService.AddHeaderLine(value.TaxId);
+                ticketService.AddHeaderLine(value.Address);
+                ticketService.AddHeaderLine("*** VENTA ***");
+                ticketService.AddHeaderLine(value.SaleDate.ToString());
+                ticketService.AddSubHeaderLine("Folio: " + value.SaleId);
                 foreach (var item in value.Items)
                 {
                     ticketService.AddItem(item.Cantidad.ToString(), item.Descripcion, item.Importe.ToString());
@@ -70,7 +71,10 @@ namespace AspNetSelfHostDemo
                 */
 
                 ticketService.AddFooterLine("Gracias por su preferencia...");
-                ticketService.AddFooterLine(value.Pagare);
+                if (value.Pagare != null) 
+                {
+                    ticketService.AddFooterLine(value.Pagare);
+                }
                 ticketService.PrintTicket(value.PrinterName);
             }
             
